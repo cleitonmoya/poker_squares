@@ -128,12 +128,12 @@ for n in range(N):
             A.append(1)
             s0=s
             F.append(fs)
-            if fs> Elite[-1][0]:
-                Elite.append((fs,s))
+            
         else:
             if verb: print(f't{n}: rejeitando')
             A.append(0)
             F.append(fs0)
+
 
 print('Jogo inicial:')
 print_s(s00)
