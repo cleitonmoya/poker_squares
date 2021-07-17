@@ -92,10 +92,11 @@ s00 = s0
 F = []
 D = []
 A = []
+Elite = [(f(s0),s0)]
 
 # Define uma mesa (estado) inicial
 F.append(f(s0))
-verb=True
+verb=False
 for n in range(N):
     
     # Movimento proposto
@@ -114,6 +115,8 @@ for n in range(N):
         F.append(fs)
         A.append(1)
         if verb: print(f't{n}: Delta>=0 ({delta}), aceitando')
+        if fs> Elite[-1][0]:
+            Elite.append((fs,s))
     
     # Caso contrário, aceita probabilisticamente
     else:
@@ -125,18 +128,18 @@ for n in range(N):
             A.append(1)
             s0=s
             F.append(fs)
+            if fs> Elite[-1][0]:
+                Elite.append((fs,s))
         else:
             if verb: print(f't{n}: rejeitando')
             A.append(0)
             F.append(fs0)
 
-
 print('Jogo inicial:')
 print_s(s00)
-print('\nJogo final:')
-print_s(s)
+print('\nMelhor solução:')
+print_s(Elite[-1][1])
 
-fig,ax = plt.subplots(2,1,sharex=True)
-ax[0].plot(F)
-ax[0].set_xticks(range(N))
-ax[1].step(range(N),np.array(A)*np.array(D),where='post')
+fig,ax = plt.subplots()
+ax.plot(F)
+ax.set_xticks(range(N))
