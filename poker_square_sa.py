@@ -6,8 +6,10 @@ Created on Tue Jun 22 23:31:51 2021
 """
 
 import numpy as np
-from math import exp
+from math import exp, log
 import matplotlib.pyplot as plt
+from termcolor import colored
+plt.rcParams.update({'font.size': 8})
 
 # Baralho
 # (value, suit)
@@ -20,7 +22,53 @@ deck1 = [(v,s)
 for i,e in enumerate(deck1):
     deck[i] = e
 
-# Se todas as cartas são do mesmo naipe
+# =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=--=-=-=-=-=-=--=-=-=-=-=-=-=-=
+# Funções Auxiliares
+# =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=--=-=-=-=-=-=--=-=-=-=-=-=-=-=
+
+def load_table(file):
+    
+    table = []
+    table2 =[]
+    with open(file,'r') as f:
+        rows = f.readlines()
+        for i,r in enumerate(rows):
+            r = r.rstrip('\n')
+            cards = r.split(",")
+            table.append(cards)
+    f.close()
+    
+    for r in table:
+        r2 = []
+        for c in r:
+            
+            if c[0] == 'A':
+                c2v = 1
+            elif c[0] == 'J':
+                c2v = 11
+            elif c[0] == 'Q':
+                c2v = 12
+            elif c[0] == 'K':
+                c2v = 13
+            else:
+                c2v = int(c[0])
+                
+            if c[1]=='s': # spade
+                c2s = '\u2660'
+            elif c[1]=='h': #heart
+                c2s = '\u2661'
+            elif c[1]=='d': #heart
+                c2s = '\u2662'
+            elif c[1]=='c': #club
+                c2s = '\u2663'
+            
+            r2.append((c2v,c2s))
+        table2.append(r2)
+        
+    dt=np.dtype('O,U1')
+    return np.array(table2,dtype=dt).astype('object')
+
+# Calcula a pontuação de uma mão (vetor)
 def score_hand(v):
     values = sorted([c for c,_ in v])
     suits = [s for _,s in v]
@@ -60,44 +108,84 @@ def score_hand(v):
         else:
             return 0
 
-
-def print_s(s):
-    for row in s:
-        print(''.join(str(c[0])+c[1]+'\t'  for c in row),score_hand(row))
-    print('')
-    print(''.join(str(score_hand(v))+'\t' for v in s.T)+' '+str(f(s)))
-
+# Calcula a pontuação de um jogo
 def f(s):
     scr_lin = sum([score_hand(v) for v in s])
     scr_col = sum([score_hand(v) for v in s.T])
     return scr_lin+scr_col
 
-
-T = 2
+# Probabilidade de aceite (Metropolis-Hastings)
 def p_accept(delta,T):
     return min(1,exp(delta/T))
 
+# Faz uma permutação aleatória entre dois elementos
 def permut(s0):
     i1,j1,i2,j2 = np.random.randint(5,size=4)
     s=s0.copy()
     s[i2][j2],s[i1][j1] = s[i1][j1],s[i2][j2]
     return s
 
+# Imprime um jogo
+def print_s(s):
+    for row in s:
+        row2=row.copy()
+        for j,p in enumerate(row):
+            if p[0]==1:
+                row2[j]=('A', p[1])
+            elif p[0]==11:
+                row2[j]=('J', p[1])
+            elif p[0]==12:
+                row2[j]=('Q', p[1])
+            elif p[0]==13:
+                row2[j]=('K', p[1])
+        print(''.join(str(c[0])+c[1]+'\t'  for c in row2),colored(score_hand(row),'green'))
+    print(''.join(colored(score_hand(v),'green')+'\t' for v in s.T),colored(f(s),'red',attrs=['bold']))
+
+
+# Funções de decaimento da temperatura
+def linear_ann2(Ti,Tf,N):
+    return np.linspace(Ti,Tf,N)
+
+def geom_ann2(Ti,Tf,N):
+    return np.geomspace(Ti,Tf,N)
+
+def log_ann2(t,a,b):
+    return a*log(t+b)
+
+def log_ann(t,a,b):
+    return a/(log(t+b))
+
+
+# =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=--=-=-=-=-=-=--=-=-=-=-=-=-=-=
+# Simulated Annealing
+# =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=--=-=-=-=-=-=--=-=-=-=-=-=-=-=
+
+# Parâmetros gerais
+verb=False
 np.random.seed(42)
 
-N = 20
-S = []
-s0 = np.random.choice(deck, size=(5,5), replace=False) # Mesa (estado inicial)
+# Agenda de resfiamento
+N = 5000
+a = 8
+b = 5
+x = np.arange(1,N+1)
+Annealing = [log_ann(t,a,b) for t in x]
+
+# Define uma mesa (estado) inicial
+# s0 = np.random.choice(deck, size=(5,5), replace=False) # Mesa (estado inicial)
+s0 = load_table('s.txt')
+
+
 s00 = s0
+S = []
 F = []
 D = []
 A = []
 Elite = [(f(s0),s0)]
-
-# Define uma mesa (estado) inicial
 F.append(f(s0))
-verb=False
-for n in range(N):
+
+#%%
+for n,T in enumerate(Annealing):
     
     # Movimento proposto
     s = permut(s0)
@@ -134,12 +222,22 @@ for n in range(N):
             A.append(0)
             F.append(fs0)
 
-
-print('Jogo inicial:')
+#%%
+print('Jogo inicial:\n')
 print_s(s00)
-print('\nMelhor solução:')
+print('\nMelhor solução:\n')
 print_s(Elite[-1][1])
 
-fig,ax = plt.subplots()
-ax.plot(F)
-ax.set_xticks(range(N))
+
+fig,ax = plt.subplots(2,1)
+ax[0].plot(F)
+ax[0].set_xlabel('Iteração')
+ax[0].set_ylabel('Score')
+ax[1].plot(Annealing)
+ax[1].set_xlabel('Iteração')
+ax[1].set_ylabel('Temperatura')
+plt.tight_layout()
+
+plt.figure()
+d,c = np.unique(D, return_counts=True)
+plt.bar(-d,c,alpha=0.7)
