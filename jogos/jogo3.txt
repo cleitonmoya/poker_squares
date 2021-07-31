@@ -1,0 +1,5 @@
+5c,5h,5d,9d,10c
+5s,7c,4c,8s,Qh
+3s,8c,6d,Kh,8h
+Qd,4s,Jh,Kc,7h
+Jc,10h,Qs,2h,Kd

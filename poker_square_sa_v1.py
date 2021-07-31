@@ -205,7 +205,7 @@ Ann = annealing(tipo='exp', N=N, Ti=Ti, Tf=Tf)
 
 # Jogo inicial
 # s0 = jogo_aleatorio(3439)
-s0 = load_table('jogos/jogo_print.txt')
+s0 = load_table('jogos/jogo1.txt')
 s0 = embaralha(s0)
 
 F = []
