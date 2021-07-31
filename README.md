@@ -1,6 +1,6 @@
 # Playing Poker Squares with Simulated Annealing
 
-**Poker Squares** (aka Poker Solitaire) is a patiance-styled game. There are 25 cards in a 5x5 grid. Each row and column forms a poker hand with a score. Summed up, they give a total score. The aim of the game is to arranje the cards in the grid in order to maximize the total score. So, it's a Combinatorial Optimization Problem.
+**Poker Squares** (aka Poker Solitaire) is a patience game. There are 25 cards in a 5x5 grid. Each row and column forms a poker hand with a score. Summed up, they give a total score. The aim of the game is to arranje the cards in the grid in order to maximize the total score. So, it's a Combinatorial Optimization Problem.
 
 <p align="center">
 	<img src="jogos/jogo1.jpg" alt="Poker Squares" width="200"/>
