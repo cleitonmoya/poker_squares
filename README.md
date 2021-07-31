@@ -2,7 +2,9 @@
 
 **Poker Squares** (aka Poker Solitaire) is a patiance-styled game. There are 25 cards in a 5x5 grid. Each row and column forms a poker hand with a score. Summed up, they give a total score. The aim of the game is to arranje the cards in the grid in order to maximize the total score. So, it's a Combinatorial Optimization Problem.
 
-<img src="jogos/jogo1.jpg" alt="Poker Squares" width="200" class="center"/>
+<p align="center">
+	<img src="jogos/jogo1.jpg" alt="Poker Squares" width="200"/>
+</p>
 
 There are many variations in terms of game style and scores. In this work, we adopt a game style (sometimes called **Poker Shuffle**) in witch is possible to permutate the cards on the grid without restrictions. Also, we adopt the *English Point System* [Wikipedia](https://en.wikipedia.org/wiki/Poker_squares). 
 
