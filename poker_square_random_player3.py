@@ -1,13 +1,14 @@
 # -*- coding: utf-8 -*-
 """
 Created on Tue Jun 22 23:31:51 2021
-
+Poker Squares - Aleatory Player
 @author: cleiton
 """
 
 import numpy as np
-from math import exp
+from scipy.stats import mode
 import matplotlib.pyplot as plt
+plt.rcParams.update({'font.size': 8})
 
 # Baralho
 # (value, suit)
@@ -20,7 +21,11 @@ deck1 = [(v,s)
 for i,e in enumerate(deck1):
     deck[i] = e
 
-# Se todas as cartas são do mesmo naipe
+# =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=--=-=-=-=-=-=--=-=-=-=-=-=-=-=
+# Funções Auxiliares
+# =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=--=-=-=-=-=-=--=-=-=-=-=-=-=-=
+
+# Calcula a pontuação de uma mão (vetor)
 def score_hand(v):
     values = sorted([c for c,_ in v])
     suits = [s for _,s in v]
@@ -60,55 +65,53 @@ def score_hand(v):
         else:
             return 0
 
-
-def print_s(s):
-    for row in s:
-        print(''.join(str(c[0])+c[1]+'\t'  for c in row),score_hand(row))
-    print('')
-    print(''.join(str(score_hand(v))+'\t' for v in s.T)+' '+str(f(s)))
-
+# Calcula a pontuação de um jogo
 def f(s):
     scr_lin = sum([score_hand(v) for v in s])
     scr_col = sum([score_hand(v) for v in s.T])
     return scr_lin+scr_col
 
-
-k=10
-T = 20
-def p_accept(s0,s,T):
-    return min(1,exp(f(s)-f(s0))/(k*T))
-
-
+# Faz uma permutação aleatória entre dois elementos
 def permut(s0):
     i1,j1,i2,j2 = np.random.randint(5,size=4)
     s=s0.copy()
     s[i2][j2],s[i1][j1] = s[i1][j1],s[i2][j2]
     return s
 
-N = 2000
-S = []
-s0 = np.random.choice(deck, size=(5,5), replace=False) # Mesa (estado inicial)
-s00 = s0
+# Gera um jogo aleatório
+def jogo_aleatorio():
+    return np.random.choice(deck, size=(5,5), replace=False)
+
+# =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=--=-=-=-=-=-=--=-=-=-=-=-=-=-=
+# Simulação
+# =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=--=-=-=-=-=-=--=-=-=-=-=-=-=-=
+
+# Parâmetros gerais
+verb=False
+np.random.seed(42)
+
+# número de jogos
+N = 100000
+
+# Jogo inicial
 F = []
-
-# Define uma mesa (estado) inicial
-S.append(f(s0))
 for n in range(N):
-    
-    # Movimento proposto
-    s = permut(s0)
+    #if n%100000 == 0: print(f'Jogo {n}')
+    s = jogo_aleatorio()
+    F.append(f(s))
+F = np.array(F)
 
-    # Hill Climbing
-    fs = f(s)
-    fs0 = f(s0)
-    if fs>fs0:
-        s0=s
-        F.append(fs)
-    else:
-        F.append(fs0)
+# Resultados
+print('Pontuação mín.:', F.min())
+print('Pontuação máx.:', F.max())
+print('Pontuação média.:', F.mean())
+print('Moda:', mode(F)[0][0])
+print('Desvio padrão:', F.std())
 
-print('Jogo inicial:')
-print_s(s00)
-print('\nJogo final:')
-print_s(s)
-plt.plot(F)
+# Score
+plt.figure(figsize=(4,3))
+f,c = np.unique(F, return_counts=True)
+plt.bar(f,c,alpha=0.7)
+plt.axvline(F.mean(),c='r',linestyle='--', label='média')
+plt.title('Pontuação')
+plt.tight_layout()
