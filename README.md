@@ -12,7 +12,7 @@ Despite their simplicity, exactly solving a Poker Square game is prohibitive bec
 
 In this project we play Poker Squares using **Simulated Annealing**, a Metaheuristic and Monte Carlo-type Algorithm based on the **Metropolis-Hastings** - in turn, one of the most important algorithms of the 20th century. Although there is no guarantee of achieving the global optimum, the practical solutions are usually good.
 
-With a simple implementation, I got a mean score of 78 — above my own average and probably above the average of an average human — and a maximum score of 131; this would be in the top 3 of the ranking of [Poker Solitaire by Bearded Whale](https://www.amazon.com/Bearded-Whale-Poker-Solitaire/dp/B074N3K6NQ). I used exponential annealing, changing every step, starting with T=5 and ending with T=0.001, 10,000 steps. I ran 1,000 games. **2024/05/11 update**: Unfortunately, the game is not available at the Google Play Store.
+With a simple implementation, I got a mean score of 78 — above my own average and probably above the average of an average human — and a maximum score of 131; this would be in the top 3 of the ranking of [Poker Solitaire by Bearded Whale](https://www.amazon.com/Bearded-Whale-Poker-Solitaire/dp/B074N3K6NQ). I used exponential annealing, changing every step, starting with T=5 and ending with T=0.001, 10,000 steps. I ran 1,000 games. **2024/May/11 update**: Unfortunately, the game is no longer available in Google Play Store.
 
 Also, I was able to get 4,500 points using the same point system and initial tableau proposed by [McLaughlin, 1989](http://dns.uls.cl/~ej/daa_08/Algoritmos/books/book10/8909b/8909b.htm), while he got 4,516 but with a more complex algorithm.
 
