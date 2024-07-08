@@ -16,4 +16,4 @@ With a simple implementation, I got a mean score of 78 — above my own average 
 
 Also, I was able to get 4,500 points using the same point system and initial tableau proposed by [McLaughlin, 1989](http://dns.uls.cl/~ej/daa_08/Algoritmos/books/book10/8909b/8909b.htm), while he got 4,516 but with a more complex algorithm.
 
-The students voted this the best work of class 2020/2 in the discipline [COS765](https://www.cos.ufrj.br/~daniel/rc/) — Complex Networks.
+The students voted this the best work of class 2020/2 in the discipline [COS767](https://www.cos.ufrj.br/~daniel/mcmc/) — Markov Chains and Monte Carlo Algorithms.
